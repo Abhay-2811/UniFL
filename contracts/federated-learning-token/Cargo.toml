@@ -1,0 +1,13 @@
+[package]
+name = "federated-learning-token"
+version = "0.1.0"
+authors = ["Your Name <your.email@example.com>"]
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+near-sdk = "5.5.0"
+near-contract-standards = "5.5.0"
+borsh = "1.2.0"

@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+service FederatedLearning {
+    rpc UpdateModel (ModelUpdateRequest) returns (ModelUpdateResponse);
+    rpc GetModelStats (ModelStatsRequest) returns (ModelStatsResponse);
+    rpc GetClientContribution (ClientContributionRequest) returns (ClientContributionResponse);
+    rpc Predict (PredictionRequest) returns (PredictionResponse);
+}
+
+message ModelUpdateRequest {
+    string client_id = 1;
+    repeated float model_update = 2;
+    repeated int32 weight_shapes = 3;
+}
+
+message ModelUpdateResponse {
+    bool ack = 1;
+}
+
+message ModelStatsRequest {}
+
+message ModelStatsResponse {
+    float accuracy = 1;
+    float loss = 2;
+}
+
+message ClientContributionRequest {
+    string client_id = 1;
+}
+
+message ClientContributionResponse {
+    string client_id = 1;
+    int32 contribution = 2;
+}
+
+message PredictionRequest {
+    repeated float input_data = 1;
+}
+
+message PredictionResponse {
+    repeated float result = 1;
+}
