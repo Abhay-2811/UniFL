@@ -54,9 +54,9 @@ CORS(app, resources={
 
 # NEAR contract configuration
 NEAR_NETWORK = "testnet"
-NEAR_CONTRACT_ID = "unifl-test1.testnet"  # Contract address
-NEAR_ACCOUNT_ID = os.getenv("NEAR_ACCOUNT_ID", "unifl.testnet")  # Contract owner
-NEAR_PRIVATE_KEY = os.getenv("NEAR_PRIVATE_KEY")  # Get from unifl-test.testnet credentials
+NEAR_CONTRACT_ID = os.getenv("NEAR_CONTRACT_ID", "unifl-test1.testnet")
+NEAR_ACCOUNT_ID = os.getenv("NEAR_ACCOUNT_ID", "unifl.testnet")  # Update to match contract owner
+NEAR_PRIVATE_KEY = os.getenv("NEAR_PRIVATE_KEY")
 
 print(f"NEAR_ACCOUNT_ID: {NEAR_ACCOUNT_ID}")
 print(f"NEAR_PRIVATE_KEY: {NEAR_PRIVATE_KEY}")
@@ -160,13 +160,19 @@ class FederatedLearningServer(FederatedLearningServicer):
                 'update_contributor_score',
                 f'{{"contributor": "{client_id}", "impact": {impact}}}',
                 '--accountId',
-                NEAR_ACCOUNT_ID
+                NEAR_ACCOUNT_ID,
+                '--gas',
+                '300000000000000'  # Add explicit gas limit
             ]
+            
+            self.log_event(f"Executing NEAR command: {' '.join(cmd)}", "info")
             result = subprocess.run(cmd, capture_output=True, text=True)
+            
             if result.returncode == 0:
                 self.log_event(f"Updated NEAR contract for {client_id}", "success")
             else:
                 self.log_event(f"Failed to update NEAR contract: {result.stderr}", "error")
+                self.log_event(f"Command output: {result.stdout}", "error")
         except Exception as e:
             self.log_event(f"Failed to update NEAR contract: {str(e)}", "error")
 
